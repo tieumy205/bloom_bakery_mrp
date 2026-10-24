@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-18T06:43:08.212Z",
+  "postgres": "18.6",
+  "database": "bloom_test_official_v3",
+  "sqlSha256": "5114669a4b706a820c81bb41ba0d766f839ef6651495212c5ee2bc875126d04d",
+  "restore": "passed",
+  "workflowAssertions": 54,
+  "concurrencyAssertions": 4,
+  "scope": "Dedicated temporary PostgreSQL cluster only; workflow test rolls back; concurrency fixtures stay only in disposable test database. Backend-only rules are not API-tested.",
+  "result": "passed"
+}

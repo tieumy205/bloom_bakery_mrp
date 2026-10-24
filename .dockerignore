@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.tmp
+docs
+*.log
+.env
+.env.*
+backend/.env.local
+backend/.env.admin.local

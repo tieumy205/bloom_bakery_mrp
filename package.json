@@ -1,0 +1,36 @@
+{
+  "name": "bloom-bakery-mrp",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b && tsc -p backend/tsconfig.json",
+    "api": "node --env-file-if-exists=backend/.env.local --experimental-strip-types backend/src/server.ts",
+    "api:check": "tsc -p backend/tsconfig.json",
+    "api:test": "node --experimental-strip-types --test backend/tests/*.test.ts",
+    "test": "vitest run src",
+    "api:bootstrap": "node --env-file-if-exists=backend/.env.admin.local --experimental-strip-types backend/src/bootstrap.ts",
+    "preview": "vite preview --host 127.0.0.1",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.0",
+    "lucide-react": "^0.468.0",
+    "pg": "^8.23.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.9.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "prettier": "^3.9.10",
+    "typescript": "~5.9.0",
+    "vite": "^7.1.0",
+    "vitest": "^5.0.5"
+  }
+}

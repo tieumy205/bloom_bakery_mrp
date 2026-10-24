@@ -1,0 +1,48 @@
+{
+  "sourceSha256": "e04e15d95e6b16d1e05495b713534f434e3ab25e4da283baffbe93fcd8aeb941",
+  "officialSqlSha256": "5114669a4b706a820c81bb41ba0d766f839ef6651495212c5ee2bc875126d04d",
+  "method": "Static structure and in-memory seed validation only; no PostgreSQL execution",
+  "tableCount": 25,
+  "triggerCount": 18,
+  "functionCount": 11,
+  "addedTriggers": [],
+  "foreignKeysCheckedAgainstSeed": 37,
+  "seedRowCounts": {
+    "bom": 3,
+    "bom_details": 12,
+    "material_issue_request_details": 4,
+    "material_issue_requests": 1,
+    "material_receipt_note_details": 4,
+    "material_receipt_notes": 1,
+    "material_replenishment_request_details": 5,
+    "material_replenishment_requests": 2,
+    "material_transactions": 8,
+    "materials": 5,
+    "modules": 11,
+    "notifications": 0,
+    "permissions": 51,
+    "product_issue_request_details": 2,
+    "product_issue_requests": 1,
+    "product_transactions": 4,
+    "production_order_details": 2,
+    "production_orders": 1,
+    "products": 3,
+    "role_permissions": 66,
+    "roles": 3,
+    "suppliers": 2,
+    "units": 4,
+    "users": 3
+  },
+  "historicalBomAssignments": [
+    {
+      "detailId": "POD01",
+      "bomId": "BOM01"
+    },
+    {
+      "detailId": "POD02",
+      "bomId": "BOM02"
+    }
+  ],
+  "issueCountRule": "Backend only; no partial unique index or count trigger",
+  "result": "static checks passed"
+}

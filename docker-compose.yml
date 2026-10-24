@@ -1,0 +1,68 @@
+# Chạy: docker compose up --build
+# Truy cập: http://localhost:8080
+# Tài khoản gốc: admin / manager / employee, mật khẩu 12345
+#
+# Nên đặt lại hai biến sau bằng file .env hoặc biến môi trường:
+#   POSTGRES_PASSWORD
+#   SESSION_SECRET  (ít nhất 32 ký tự)
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: bloom_bakery
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./database/bakery_mrp_official.sql:/docker-entrypoint-initdb.d/01_official.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bloom_bakery"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: bloom_bakery
+      PGUSER: postgres
+      PGPASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      API_HOST: 0.0.0.0
+      API_PORT: 3001
+      SESSION_SECRET: ${SESSION_SECRET:-dev-only-change-this-session-secret-in-production}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:8080,http://127.0.0.1:8080}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3001/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+
+volumes:
+  pgdata:

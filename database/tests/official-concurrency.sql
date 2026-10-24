@@ -1,0 +1,22 @@
+\set ON_ERROR_STOP on
+BEGIN;
+SET LOCAL search_path=bakery_mrp,pg_temp;
+INSERT INTO users(user_id,username,full_name,email,role_id) VALUES('OCMGR','ocmgr','Concurrency manager','ocmgr@example.invalid','R02'),('OCEMP','ocemp','Concurrency employee','ocemp@example.invalid','R03');
+INSERT INTO units(unit_id,unit_name,symbol) VALUES('OCU','OC test unit','ocu');
+INSERT INTO suppliers(supplier_id,supplier_name) VALUES('OCSUP','Official concurrency supplier');
+INSERT INTO materials(material_id,material_name,min_stock,unit_id) VALUES('OCFL','Concurrency flour',5,'OCU');
+INSERT INTO products(product_id,product_name,unit_id) VALUES('OCP','Concurrency product','OCU'),('OCNEW','Concurrent BOM product','OCU');
+INSERT INTO bom(bom_id,product_id,version_code,unit_id,created_by) VALUES('OCB','OCP','1.0','OCU','OCMGR');
+INSERT INTO bom_details(bom_detail_id,bom_id,material_id,quantity) VALUES('OCBD','OCB','OCFL',1);
+INSERT INTO production_orders(production_order_id,created_by,assigned_to,due_date) VALUES('OCPO1','OCMGR','OCEMP',CURRENT_DATE),('OCPO2','OCMGR','OCEMP',CURRENT_DATE);
+INSERT INTO production_order_details(production_order_detail_id,production_order_id,product_id,bom_id,target_quantity) VALUES('OCPOD1','OCPO1','OCP','OCB',4),('OCPOD2','OCPO2','OCP','OCB',4);
+INSERT INTO material_replenishment_requests(material_replenishment_request_id,created_by,request_type) VALUES('OCMR','OCEMP','minStock');
+INSERT INTO material_replenishment_request_details(replenishment_request_detail_id,material_replenishment_request_id,material_id,requirement_quantity,requested_quantity) VALUES('OCMRD','OCMR','OCFL',5,5);
+UPDATE material_replenishment_requests SET status='approved',approved_by='OCMGR' WHERE material_replenishment_request_id='OCMR';
+INSERT INTO material_receipt_notes(material_receipt_note_id,created_by,supplier_id,material_replenishment_request_id,receipt_date) VALUES('OCRN','OCMGR','OCSUP','OCMR',CURRENT_DATE);
+INSERT INTO material_receipt_note_details(material_receipt_note_detail_id,material_receipt_note_id,material_id,received_quantity) VALUES('OCRND','OCRN','OCFL',5);
+UPDATE material_receipt_notes SET status='pending' WHERE material_receipt_note_id='OCRN';
+UPDATE material_receipt_notes SET status='completed' WHERE material_receipt_note_id='OCRN';
+INSERT INTO material_issue_requests(material_issue_request_id,created_by,production_id) VALUES('OCMI1','OCEMP','OCPO1'),('OCMI2','OCEMP','OCPO2');
+INSERT INTO material_issue_request_details(material_issue_request_detail_id,material_issue_request_id,material_id,material_requirement,request_quantity) VALUES('OCMID1','OCMI1','OCFL',4,4),('OCMID2','OCMI2','OCFL',4,4);
+COMMIT;
